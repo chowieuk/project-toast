@@ -14,6 +14,10 @@ function ToastPlayground() {
     const [message, setMessage] = React.useState("");
     const [toastVisibility, setToastVisibility] = React.useState(false);
 
+    function handleDismiss() {
+        setToastVisibility(false);
+    }
+
     return (
         <div className={styles.wrapper}>
             <header>
@@ -24,12 +28,14 @@ function ToastPlayground() {
                 <h1>Toast Playground</h1>
             </header>
 
-            <Toast
-                variant={variant}
-                message={message}
-                visible={toastVisibility}
-                callback={setToastVisibility}
-            ></Toast>
+            {toastVisibility && (
+                <Toast
+                    variant={variant}
+                    handleDismiss={handleDismiss}
+                >
+                    {message}
+                </Toast>
+            )}
 
             <div className={styles.controlsWrapper}>
                 <div className={styles.row}>
