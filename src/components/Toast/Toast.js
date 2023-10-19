@@ -23,6 +23,21 @@ const ICONS_BY_VARIANT = {
 function Toast({ id, variant, children }) {
     const { dismissToast } = React.useContext(ToastContext);
     const Icon = ICONS_BY_VARIANT[variant];
+
+    function handleKeydown(event) {
+        if (event.key === "Escape") {
+            dismissToast(id);
+        }
+    }
+
+    React.useEffect(() => {
+        window.addEventListener("keydown", handleKeydown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeydown);
+        };
+    }, []);
+
     return (
         <div className={`${styles.toast} ${styles[variant]}`}>
             <div className={styles.iconContainer}>
