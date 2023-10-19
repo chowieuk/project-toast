@@ -5,7 +5,6 @@ import Button from "../Button";
 import styles from "./ToastPlayground.module.css";
 
 import ToastVariantRadioButton from "../ToastVariantRadioButton/ToastVariantRadioButton";
-import Toast from "../Toast/Toast";
 import ToastShelf from "../ToastShelf/ToastShelf";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
@@ -17,23 +16,24 @@ function ToastPlayground() {
     const [activeToasts, setActiveToasts] = React.useState([]);
 
     function handleDismiss(id) {
-        setActiveToasts((prevToasts) =>
-            prevToasts.filter((toast) => toast.id !== id)
-        );
+        const nextToasts = activeToasts.filter((toast) => {
+            return toast.id !== id;
+        });
+
+        setActiveToasts(nextToasts);
     }
 
     function handleSubmit(toastVariant, toastMessage) {
         const id = crypto.randomUUID();
-        newToast = {
+        const newToast = {
             variant: toastVariant,
             message: toastMessage,
             id: id,
-            handleDismiss: () => {
-                handleDismiss(id);
-            },
         };
 
-        setActiveToasts((prevToasts) => [...prevToasts, newToast]);
+        nextToasts = [...activeToasts, newToast];
+
+        setActiveToasts(nextToasts);
         setVariant(VARIANT_OPTIONS[0]);
         setMessage("");
     }
@@ -49,7 +49,10 @@ function ToastPlayground() {
             </header>
 
             {activeToasts.length !== 0 && (
-                <ToastShelf toasts={activeToasts}></ToastShelf>
+                <ToastShelf
+                    toasts={activeToasts}
+                    handleDismiss={handleDismiss}
+                ></ToastShelf>
             )}
 
             <form
