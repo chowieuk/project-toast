@@ -23,7 +23,7 @@ function ToastProvider({ children }) {
             id: id,
         };
 
-        nextToasts = [...activeToasts, newToast];
+        const nextToasts = [...activeToasts, newToast];
 
         setActiveToasts(nextToasts);
     }

@@ -10,7 +10,7 @@ import ToastVariantRadioButton from "../ToastVariantRadioButton/ToastVariantRadi
 import ToastShelf from "../ToastShelf/ToastShelf";
 
 function ToastPlayground() {
-    const { VARIANT_OPTIONS, activeToasts, dismissToast, createToast } =
+    const { VARIANT_OPTIONS, activeToasts, createToast } =
         React.useContext(ToastContext);
 
     const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
@@ -33,12 +33,7 @@ function ToastPlayground() {
                 <h1>Toast Playground</h1>
             </header>
 
-            {activeToasts.length !== 0 && (
-                <ToastShelf
-                    toasts={activeToasts}
-                    handleDismiss={dismissToast}
-                ></ToastShelf>
-            )}
+            {activeToasts.length !== 0 && <ToastShelf></ToastShelf>}
 
             <form
                 onSubmit={handleSubmit}
