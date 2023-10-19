@@ -6,16 +6,36 @@ import styles from "./ToastPlayground.module.css";
 
 import ToastVariantRadioButton from "../ToastVariantRadioButton/ToastVariantRadioButton";
 import Toast from "../Toast/Toast";
+import ToastShelf from "../ToastShelf/ToastShelf";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
     const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
     const [message, setMessage] = React.useState("");
-    const [toastVisibility, setToastVisibility] = React.useState(false);
 
-    function handleDismiss() {
-        setToastVisibility(false);
+    const [activeToasts, setActiveToasts] = React.useState([]);
+
+    function handleDismiss(id) {
+        setActiveToasts((prevToasts) =>
+            prevToasts.filter((toast) => toast.id !== id)
+        );
+    }
+
+    function handleSubmit(toastVariant, toastMessage) {
+        const id = crypto.randomUUID();
+        newToast = {
+            variant: toastVariant,
+            message: toastMessage,
+            id: id,
+            handleDismiss: () => {
+                handleDismiss(id);
+            },
+        };
+
+        setActiveToasts((prevToasts) => [...prevToasts, newToast]);
+        setVariant(VARIANT_OPTIONS[0]);
+        setMessage("");
     }
 
     return (
@@ -28,16 +48,17 @@ function ToastPlayground() {
                 <h1>Toast Playground</h1>
             </header>
 
-            {toastVisibility && (
-                <Toast
-                    variant={variant}
-                    handleDismiss={handleDismiss}
-                >
-                    {message}
-                </Toast>
+            {activeToasts.length !== 0 && (
+                <ToastShelf toasts={activeToasts}></ToastShelf>
             )}
 
-            <div className={styles.controlsWrapper}>
+            <form
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    handleSubmit(variant, message);
+                }}
+                className={styles.controlsWrapper}
+            >
                 <div className={styles.row}>
                     <label
                         htmlFor="message"
@@ -81,12 +102,10 @@ function ToastPlayground() {
                     <div
                         className={`${styles.inputWrapper} ${styles.radioWrapper}`}
                     >
-                        <Button onClick={() => setToastVisibility(true)}>
-                            Pop Toast!
-                        </Button>
+                        <Button>Pop Toast!</Button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }
