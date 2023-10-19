@@ -28,6 +28,25 @@ function ToastProvider({ children }) {
         setActiveToasts(nextToasts);
     }
 
+    function dismissAllToasts() {
+        setActiveToasts([]);
+    }
+
+    function handleKeydown(event) {
+        if (event.key === "Escape") {
+            dismissAllToasts();
+        }
+    }
+
+    React.useEffect(() => {
+        window.addEventListener("keydown", handleKeydown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeydown);
+        };
+        //eslint-disable-next-line
+    }, []);
+
     return (
         <ToastContext.Provider
             value={{
@@ -35,6 +54,7 @@ function ToastProvider({ children }) {
                 activeToasts,
                 createToast,
                 dismissToast,
+                dismissAllToasts,
             }}
         >
             {children}
