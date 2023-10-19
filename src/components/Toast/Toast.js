@@ -23,18 +23,37 @@ const ICONS_BY_VARIANT = {
 function Toast({ id, variant, children }) {
     const { dismissToast } = React.useContext(ToastContext);
     const Icon = ICONS_BY_VARIANT[variant];
+
+    function handleKeydown(event) {
+        if (event.key === "Escape") {
+            dismissToast(id);
+        }
+    }
+
+    React.useEffect(() => {
+        window.addEventListener("keydown", handleKeydown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeydown);
+        };
+    }, []);
+
     return (
         <div className={`${styles.toast} ${styles[variant]}`}>
             <div className={styles.iconContainer}>
                 <Icon size={24} />
             </div>
-            <p className={styles.content}>{children}</p>
+            <p className={styles.content}>
+                <VisuallyHidden>{variant} - </VisuallyHidden>
+                {children}
+            </p>
             <button
                 onClick={() => dismissToast(id)}
                 className={styles.closeButton}
+                aria-label="Dissmiss message"
+                aria-live="off"
             >
                 <X size={24} />
-                <VisuallyHidden>Dismiss message</VisuallyHidden>
             </button>
         </div>
     );
