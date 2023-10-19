@@ -4,36 +4,21 @@ import Button from "../Button";
 
 import styles from "./ToastPlayground.module.css";
 
+import { ToastContext } from "../ToastProvider";
+
 import ToastVariantRadioButton from "../ToastVariantRadioButton/ToastVariantRadioButton";
 import ToastShelf from "../ToastShelf/ToastShelf";
 
-const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
-
 function ToastPlayground() {
+    const { VARIANT_OPTIONS, activeToasts, dismissToast, createToast } =
+        React.useContext(ToastContext);
+
     const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
     const [message, setMessage] = React.useState("");
 
-    const [activeToasts, setActiveToasts] = React.useState([]);
-
-    function handleDismiss(id) {
-        const nextToasts = activeToasts.filter((toast) => {
-            return toast.id !== id;
-        });
-
-        setActiveToasts(nextToasts);
-    }
-
-    function handleSubmit(toastVariant, toastMessage) {
-        const id = crypto.randomUUID();
-        const newToast = {
-            variant: toastVariant,
-            message: toastMessage,
-            id: id,
-        };
-
-        nextToasts = [...activeToasts, newToast];
-
-        setActiveToasts(nextToasts);
+    function handleSubmit(event) {
+        event.preventDefault();
+        createToast(variant, message);
         setVariant(VARIANT_OPTIONS[0]);
         setMessage("");
     }
@@ -51,15 +36,12 @@ function ToastPlayground() {
             {activeToasts.length !== 0 && (
                 <ToastShelf
                     toasts={activeToasts}
-                    handleDismiss={handleDismiss}
+                    handleDismiss={dismissToast}
                 ></ToastShelf>
             )}
 
             <form
-                onSubmit={(event) => {
-                    event.preventDefault();
-                    handleSubmit(variant, message);
-                }}
+                onSubmit={handleSubmit}
                 className={styles.controlsWrapper}
             >
                 <div className={styles.row}>
